@@ -6,14 +6,15 @@ views for user api
 # Create your views here.
 from django.shortcuts import render
 from rest_framework import generics, authentication, permissions
+from rest_framework.generics import CreateAPIView, RetrieveUpdateAPIView
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.settings import api_settings
 from .serializers import UserSerializers, AuthTokenSerializer
 
 
-class CreateUserView(generics.CreateAPIView):
+class CreateUserView(CreateAPIView):
     """ create user in system """
-
+    permission_classes = [permissions.AllowAny]
     serializer_class = UserSerializers
 
 
@@ -23,7 +24,7 @@ class CreateTokenView(ObtainAuthToken):
     renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES
 
 
-class ManageUserView(generics.RetrieveUpdateAPIView):
+class ManageUserView(RetrieveUpdateAPIView):
     """ manage the authenticated user """
     serializer_class = UserSerializers
     authentication_classes = [authentication.TokenAuthentication]

@@ -12,8 +12,9 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
+from django.urls import reverse_lazy
 
-import drf_spectacular.openapi
+# import drf_spectacular.openapi
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -40,9 +41,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'core',
     'rest_framework',
-    'rest_framework.authtoken',
     'drf_spectacular',
+    'rest_framework.authtoken',
     'user',
+    'recipe',
+
 ]
 
 MIDDLEWARE = [
@@ -130,14 +133,24 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'core.User'
 
 REST_FRAMEWORK = {
-    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
-
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
+    ],
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.TokenAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "custom_jwt.authentication.CustomJWTAuthentication",
+    ],
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
+# DRF Spectacular Settings
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'Your Project API',
-    'DESCRIPTION': 'Your project description',
-    'VERSION': '1.0.0',
-    # 'SERVE_INCLUDE_SCHEMA': False,
-    # OTHER SETTINGS
+    "TITLE": "Test APIs",
+    "DESCRIPTION": "Various APIs for Test service",
+    "VERSION": "1.0.0",
+    "PREPROCESSING_HOOKS": ["spectacular.hooks.remove_apis_from_list"],
+    # Custom Spectacular Settings
+    "EXCLUDE_PATH": [reverse_lazy("schema")],
 }
